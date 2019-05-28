@@ -1,5 +1,18 @@
 # graphQL-node
 
-## Available Scripts:
-- npm 
-- npm run start
+## Requires
+
+- [Node](https://nodejs.org/en/download)
+- [npm](https://www.npmjs.com/)
+
+
+### Install
+
+```bash
+$ npm
+```
+
+### Available Scripts:
+```bash
+$ npm run start
+```
