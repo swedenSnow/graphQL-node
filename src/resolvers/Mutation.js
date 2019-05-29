@@ -152,7 +152,6 @@ const Mutation = {
 
         const deletedComments = db.comments.splice(commentIndex, 1);
 
-        // comments = comments.filter(comment => comment.id !== args.id);
         return deletedComments[0];
     },
     updateComment(parent, args, { db }, info) {
