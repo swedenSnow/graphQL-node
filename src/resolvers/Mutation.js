@@ -135,7 +135,7 @@ const Mutation = {
 
         if (typeof data.isPublished === 'boolean') {
             post.isPublished = data.isPublished;
-
+            //! Is the orginal published AND now UNpublished
             if (orginalPost.isPublished && !post.isPublished) {
                 //! DELETE
                 pubsub.publish('post', {
@@ -182,11 +182,16 @@ const Mutation = {
         };
 
         db.comments.push(comment);
-        pubsub.publish(`comment ${args.data.post}`, { comment });
+        pubsub.publish(`comment ${args.data.post}`, {
+            comment: {
+                mutation: 'CREATED',
+                data: comment,
+            },
+        });
 
         return comment;
     },
-    deleteComment(parent, args, { db }, info) {
+    deleteComment(parent, args, { db, pubsub }, info) {
         //! Does that comment exist check?!
         const commentIndex = db.comments.findIndex(
             comment => comment.id === args.id
@@ -196,21 +201,29 @@ const Mutation = {
             throw new Error('No comment was found');
         }
 
-        const deletedComments = db.comments.splice(commentIndex, 1);
+        const [deletedComment] = db.comments.splice(commentIndex, 1);
 
-        return deletedComments[0];
+        pubsub.publish(`comment ${deletedComment.post}`, {
+            comment: {
+                mutation: 'DELETED',
+                data: deletedComment,
+            },
+        });
+
+        return deletedComment;
     },
     updateComment(parent, args, { db }, info) {
         const { id, data } = args;
         const comment = db.comments.find(comment => comment.id === id);
 
         if (!comment) {
-            throw new Error('No such comment can be found');
+            throw new Error('Comment not found');
         }
 
         if (typeof data.text === 'string') {
             comment.text = data.text;
         }
+
         return comment;
     },
 };
