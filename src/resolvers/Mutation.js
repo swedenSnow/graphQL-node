@@ -1,5 +1,16 @@
 import uuidv4 from 'uuid/v4';
 
+//! Enum
+//! A special type that defines a set of constants
+//! Enums can be used as the type for a field (similar to scalar and custom objects types)
+//! Values for the field must be one of the constants for the type
+
+//! UserRole - standard, editor, Admin
+
+//! type: User {
+//! role: UserRole(standard, editor Admin)
+//! }
+
 const Mutation = {
     createUser(parent, args, { db }, info) {
         const emailTaken = db.users.some(
